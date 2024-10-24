@@ -18,16 +18,14 @@ def run_git_command(command):
         return None
 
 
-def upload(deskriptorFolderPath : str):
-
+def upload(deskriptorFolderPath: str):
     if not '/' in deskriptorFolderPath:
         raise RuntimeError(
             'Please define your path using forward slashes.'
         )
-    
+
     deskriptorFolderPath = os.path.normpath(deskriptorFolderPath)
 
-    #deskriptorFolderPath, filename = os.path.split(deskriptorFolderPath)
     if not os.path.isdir(deskriptorFolderPath):
         raise ValueError(
             "Invalid deskriptor path."
@@ -35,45 +33,38 @@ def upload(deskriptorFolderPath : str):
 
     deskriptorFolder = deskriptorFolderPath.split(os.sep)[-1]
 
-
-
-    branches = run_git_command(['git','branch','-l'])
+    branches = run_git_command(['git', 'branch', '-l'])
 
     if not deskriptorFolder in branches:
         # Create and checkout a new branch
         run_git_command(['git', 'checkout', '-b', deskriptorFolder])
 
     currentDirPath = os.getcwd()
-
     dstPath = os.path.join(currentDirPath, deskriptorFolder)
 
     # Copy deskriptorFolderPath into current working directory
     if not os.path.exists(dstPath):
-        shutil.copy(src=deskriptorFolderPath, dst= dstPath)
+        shutil.copy(src=deskriptorFolderPath, dst=dstPath)
 
-    run_git_command(['git','add', f'{dstPath}'])
+    run_git_command(['git', 'add', f'{dstPath}'])
 
     commit_message = "Added software defined dataset."
-    
-    result = run_git_command(['git','commit', '-m', commit_message])
-
+    result = run_git_command(['git', 'commit', '-m', commit_message])
 
     print("Uploading software defined dataset to remote...")
-
-    run_git_command(['git', 'push', '--set-upstream',  'origin', f'{deskriptorFolder}'])
+    run_git_command(['git', 'push', '--set-upstream', 'origin', f'{deskriptorFolder}'])
 
     run_git_command(['git', 'checkout', 'main'])
 
+
 def get_descriptors():
-
     descriptor_list = run_git_command(['git', 'branch', '--list']).split('\n')
-
     if not descriptor_list:
-        return []    
+        return []
     return [item.strip() for item in descriptor_list if 'main' not in item]
 
-def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bool = False):
 
+def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bool = False):
     deskriptorFolder = deskriptorFolder.rstrip('/')
 
     if not '/' in outputDirPath:
@@ -92,7 +83,7 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
 
     if not any(deskriptorFolder in item for item in descrikptor_list):
         raise RuntimeError(f'The required data descriptor was not found. Pick from {descrikptor_list}')
-    
+
     # Run Git command to checkout the correct folder
     run_git_command(['git', 'checkout', f'{deskriptorFolder}'])
 
@@ -119,17 +110,13 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
         # Walk through the source folder and gather relevant files
         for root, _, files in os.walk(srcPath):
             for file in files:
-                # Collect all .json files
                 if file.endswith(".json"):
                     metadata["files"].append(file)
-                # Collect all Python files for pipelines
                 elif file.endswith(".py"):
                     metadata["pipeline"].append(os.path.relpath(os.path.join(root, file), srcPath))
-                # Search for Dockerfile descriptor
                 elif "dockerfile" in file.lower():
                     metadata["docker"] = os.path.relpath(os.path.join(root, file), srcPath)
 
-        # If no pipelines were found, set it to None
         if not metadata["pipeline"]:
             metadata["pipeline"] = None
 
@@ -161,7 +148,6 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
             print(f"Folder copied to: {dstPath}")
 
 
-
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Usage: python script.py <function_name> <function_args>")
@@ -173,25 +159,32 @@ if __name__ == "__main__":
     # Handle function execution based on the provided function name
     if function_name == "upload":
         if len(sys.argv) != 3:
-            print("Usage: python script.py upload <deskriptorFolderPath>")
+            print("Usage: python sddm.py upload <deskriptorFolderPath>")
             sys.exit(1)
         deskriptorFolderPath = sys.argv[2]
         upload(deskriptorFolderPath)
 
     elif function_name == "download":
-        # Example of handling another function with different arguments
         if len(sys.argv) != 5:
-            print("Usage: python script.py download <arg1> <arg2> <arg3>")
+            print("Usage: python sddm.py download <deskriptorFolder> <outputDirPath> <createJsonDescriptor(True|False)>")
             sys.exit(1)
         arg1 = sys.argv[2]
         arg2 = sys.argv[3]
         arg3 = sys.argv[4] == 'True'
-
         download(arg1, arg2, arg3)
+
+    elif function_name == "get_descriptors":
+        if len(sys.argv) != 2:
+            print("Usage: python sddm.py get_descriptors")
+            sys.exit(1)
+        descriptors = get_descriptors()
+        print("Available descriptors:", descriptors)
 
     else:
         print(f"Error: Unknown function '{function_name}'")
         sys.exit(1)
+
+
 
 #if __name__ == "__main__":
 
