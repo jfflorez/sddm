@@ -63,6 +63,8 @@ def upload(deskriptorFolderPath : str):
 
     run_git_command(['git', 'push', '--set-upstream',  'origin', f'{deskriptorFolder}'])
 
+    run_git_command(['git', 'checkout', 'main'])
+
 
 
 
@@ -109,7 +111,7 @@ def merge_branches_to_master():
 
 if __name__ == "__main__":
 
-    folder_name = 'descrikptorFolderExample3/'
+    folder_name = 'descrikptorFolderExample4/'
 
     utils.generate_example_deskriptor(folder_name)
 
