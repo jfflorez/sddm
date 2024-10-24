@@ -73,40 +73,39 @@ def get_descriptors():
         return []    
     return [item.strip() for item in descriptor_list if 'main' not in item]
 
-def download(deskriptorFolder : str, outputDirPath : str):
-
+def download(deskriptorFolder: str, outputDirPath: str):
     deskriptorFolder = deskriptorFolder.rstrip('/')
 
     if not '/' in outputDirPath:
         raise RuntimeError(
             'Please define your path using forward slashes.'
         )
-    outputDirPath = os.path.normpath(outputDirPath)
-    if not os.path.exists(outputDirPath):
-        os.mkdir(outputDirPath)
 
-    
+    # Normalize the output path
+    outputDirPath = os.path.normpath(outputDirPath)
+
+    # Ensure the output directory exists (create if needed)
+    if not os.path.exists(outputDirPath):
+        os.makedirs(outputDirPath)
 
     descrikptor_list = get_descriptors()
 
-    if not deskriptorFolder in descrikptor_list:
-
-        raise RuntimeError('The required data descriptor was not found. Pick from {descrikptor_list}')
+    if deskriptorFolder not in descrikptor_list:
+        raise RuntimeError(f'The required data descriptor was not found. Pick from {descrikptor_list}')
     
+    # Run Git command to checkout the correct folder
     run_git_command(['git', 'checkout', f'{deskriptorFolder}'])
 
+    # Destination path for the descriptor folder
     dstPath = os.path.join(outputDirPath, deskriptorFolder)
 
-    
-
-    # Copy deskriptorFolderPath into current working directory
+    # Copy the descriptor folder to the destination if it doesn't exist there
     if not os.path.exists(dstPath):
-        shutil.copy(src=outputDirPath, dst= dstPath)
+        currentDirPath = os.getcwd()
+        srcPath = os.path.join(currentDirPath, deskriptorFolder)
 
-
-
-
-
+        # Use shutil.copytree to copy the entire folder
+        shutil.copytree(src=srcPath, dst=dstPath)
 
 
     
