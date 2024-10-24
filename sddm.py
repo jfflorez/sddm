@@ -89,7 +89,7 @@ def download(deskriptorFolder : str, outputDirPath : str):
 
     descrikptor_list = get_descriptors()
 
-    if not deskriptorFolder in descrikptor_list:
+    if not any(deskriptorFolder in item for item in descrikptor_list):
 
         raise RuntimeError('The required data descriptor was not found. Pick from {descrikptor_list}')
     
@@ -145,7 +145,7 @@ def merge_branches_to_master():
 
 if __name__ == "__main__":
 
-    folder_name = 'descrikptorFolderExample10/'
+    folder_name = 'descrikptorFolderExample100/'
 
     utils.generate_example_deskriptor(folder_name)
 
