@@ -3,6 +3,7 @@ import subprocess
 import sys
 import os
 import shutil
+import json
 
 import utils.utils as utils
 
@@ -15,8 +16,6 @@ def run_git_command(command):
     except subprocess.CalledProcessError as e:
         print(f"Error running command {command}: {e.stderr}")
         return None
-
-
 
 
 def upload(deskriptorFolderPath : str):
@@ -72,11 +71,6 @@ def get_descriptors():
     if not descriptor_list:
         return []    
     return [item.strip() for item in descriptor_list if 'main' not in item]
-
-import os
-import shutil
-import json
-import subprocess
 
 def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bool = False):
 
@@ -146,7 +140,7 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
         }
 
         # Write the JSON file to the output directory
-        jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}_descriptor.json")
+        jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}.json")
         with open(jsonFilePath, 'w') as jsonFile:
             json.dump(descriptor, jsonFile, indent=2)
 
@@ -168,49 +162,46 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
 
 
 
-    
-
-    
-
-
-def merge_branch(branch_name):
-    """Merge the pipelines folder from the specified branch into master."""
-    print(f"Switching to master branch...")
-    run_git_command(['git', 'checkout', 'master'])
-
-    print(f"Merging {branch_name} into master (only pipelines folder)...")
-    # Merge the branch, but only merge the 'pipelines' folder
-    merge_result = run_git_command(['git', 'merge', '--no-commit', '--no-ff', branch_name])
-
-    # Reset all changes except 'pipelines' folder to prevent merging anything else
-    run_git_command(['git', 'reset', 'HEAD', '--', '.'])
-    run_git_command(['git', 'checkout', '--', '.'])
-
-    # Now, stage only the 'pipelines' folder for the merge
-    run_git_command(['git', 'add', 'pipelines'])
-
-    # Commit the merge, only with 'pipelines'
-    commit_message = f"Merged pipelines folder from {branch_name} into master"
-    run_git_command(['git', 'commit', '-m', commit_message])
-
-def merge_branches_to_master():
-    """Merge pipelines folder from sample1 and sample2 into master."""
-    for branch in ['sample1', 'sample2']:
-        merge_branch(branch)
-
-    # Push changes (optional)
-    print("Pushing changes to remote...")
-    run_git_command(['git', 'push', 'origin', 'master'])
-
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python script.py <function_name> <function_args>")
+        sys.exit(1)
 
-    folder_name = 'descrikptorFolderExample89/'
+    # Extract the function name from the command line arguments
+    function_name = sys.argv[1]
 
-    utils.generate_example_deskriptor(folder_name)
+    # Handle function execution based on the provided function name
+    if function_name == "upload":
+        if len(sys.argv) != 3:
+            print("Usage: python script.py upload <deskriptorFolderPath>")
+            sys.exit(1)
+        deskriptorFolderPath = sys.argv[2]
+        upload(deskriptorFolderPath)
 
-    upload(folder_name)
+    elif function_name == "download":
+        # Example of handling another function with different arguments
+        if len(sys.argv) != 5:
+            print("Usage: python script.py download <arg1> <arg2> <arg3>")
+            sys.exit(1)
+        arg1 = sys.argv[2]
+        arg2 = sys.argv[3]
+        arg3 = sys.argv[4]
 
-    download(folder_name,'data/')
+        download(arg1, arg2, arg3)
+
+    else:
+        print(f"Error: Unknown function '{function_name}'")
+        sys.exit(1)
+
+#if __name__ == "__main__":
+
+#    folder_name = 'descrikptorFolderExample888/'
+
+#    utils.generate_example_deskriptor(folder_name)
+
+#    upload(folder_name)
+
+#    download(folder_name,'data/',True)
 
     #merge_branches_to_master()
 
