@@ -81,10 +81,21 @@ def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bo
 
     descrikptor_list = get_descriptors()
 
-    if not any(deskriptorFolder in item for item in descrikptor_list):
-        raise RuntimeError(f'The required data descriptor was not found. Pick from {descrikptor_list}')
+    # Check if the branch exists remotely
+    branch_list_remote = run_git_command(['git', 'branch', '--list', '-r'])
 
-    # Run Git command to checkout the correct folder
+    # If the branch is not in the descriptor list, fetch it
+    if not any(deskriptorFolder in item for item in descrikptor_list):  
+        if any(f'origin/{deskriptorFolder}' in branch for branch in branch_list_remote.splitlines()):
+            print(f"Fetching branch {deskriptorFolder} from the remote repository...")
+            try:
+                run_git_command(['git', 'fetch', 'origin', deskriptorFolder])
+            except RuntimeError as e:
+                raise RuntimeError(f"Failed to fetch branch '{deskriptorFolder}': {e}")
+        else:
+            raise RuntimeError(f'The required data descriptor was not found. Pick from {descrikptor_list}')
+
+    # Run Git command to checkout the correct branch
     run_git_command(['git', 'checkout', f'{deskriptorFolder}'])
 
     # Get the remote URL of the repository
