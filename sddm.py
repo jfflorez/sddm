@@ -36,7 +36,7 @@ def upload(deskriptorFolderPath : str):
 
     deskriptorFolder = deskriptorFolderPath.split(os.sep)[-1]
 
-    # TODO: check if branch exists
+
 
     branches = run_git_command(['git','branch','-l'])
 
@@ -65,16 +65,50 @@ def upload(deskriptorFolderPath : str):
 
     run_git_command(['git', 'checkout', 'main'])
 
+def get_descriptors():
+
+    descriptor_list = run_git_command(['git', 'branch', '--list']).split('\n')
+
+    if not descriptor_list:
+        return []    
+    return [item.strip() for item in descriptor_list if 'main' not in item]
+
+def download(deskriptorFolder : str, outputDirPath : str):
+
+    deskriptorFolder = deskriptorFolder.rstrip('/')
+
+    if not '/' in outputDirPath:
+        raise RuntimeError(
+            'Please define your path using forward slashes.'
+        )
+    outputDirPath = os.path.normpath(outputDirPath)
+    if not os.path.exists(outputDirPath):
+        os.mkdir(outputDirPath)
+
+    
+
+    descrikptor_list = get_descriptors()
+
+    if not deskriptorFolder in descrikptor_list:
+
+        raise RuntimeError('The required data descriptor was not found. Pick from {descrikptor_list}')
+    
+    run_git_command(['git', 'checkout', f'{deskriptorFolder}'])
+
+    dstPath = os.path.join(outputDirPath, deskriptorFolder)
+
+    
+
+    # Copy deskriptorFolderPath into current working directory
+    if not os.path.exists(dstPath):
+        shutil.copy(src=outputDirPath, dst= dstPath)
 
 
 
 
-    
 
-    
-    
-    
-    
+
+
     
 
     
@@ -113,9 +147,11 @@ if __name__ == "__main__":
 
     folder_name = 'descrikptorFolderExample4/'
 
-    utils.generate_example_deskriptor(folder_name)
+    #utils.generate_example_deskriptor(folder_name)
 
-    upload(folder_name)
+    #upload(folder_name)
+
+    download(folder_name,'data/')
 
     #merge_branches_to_master()
 
