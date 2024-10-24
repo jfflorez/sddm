@@ -145,11 +145,11 @@ def merge_branches_to_master():
 
 if __name__ == "__main__":
 
-    folder_name = 'descrikptorFolderExample4/'
+    folder_name = 'descrikptorFolderExample10/'
 
-    #utils.generate_example_deskriptor(folder_name)
+    utils.generate_example_deskriptor(folder_name)
 
-    #upload(folder_name)
+    upload(folder_name)
 
     download(folder_name,'data/')
 
