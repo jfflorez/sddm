@@ -73,7 +73,13 @@ def get_descriptors():
         return []    
     return [item.strip() for item in descriptor_list if 'main' not in item]
 
-def download(deskriptorFolder: str, outputDirPath: str):
+import os
+import shutil
+import json
+import subprocess
+
+def download(deskriptorFolder: str, outputDirPath: str, createJsonDescriptor: bool = False):
+
     deskriptorFolder = deskriptorFolder.rstrip('/')
 
     if not '/' in outputDirPath:
@@ -91,22 +97,75 @@ def download(deskriptorFolder: str, outputDirPath: str):
     descrikptor_list = get_descriptors()
 
     if not any(deskriptorFolder in item for item in descrikptor_list):
-
-        raise RuntimeError('The required data descriptor was not found. Pick from {descrikptor_list}')
+        raise RuntimeError(f'The required data descriptor was not found. Pick from {descrikptor_list}')
     
     # Run Git command to checkout the correct folder
     run_git_command(['git', 'checkout', f'{deskriptorFolder}'])
 
-    # Destination path for the descriptor folder
-    dstPath = os.path.join(outputDirPath, deskriptorFolder)
+    # Get the remote URL of the repository
+    try:
+        repo_url = run_git_command(['git', 'config', '--get', 'remote.origin.url']).strip()
+    except subprocess.CalledProcessError:
+        raise RuntimeError("Unable to fetch repository URL from git configuration.")
 
-    # Copy the descriptor folder to the destination if it doesn't exist there
-    if not os.path.exists(dstPath):
+    if createJsonDescriptor:
+        # Build the JSON descriptor
         currentDirPath = os.getcwd()
         srcPath = os.path.join(currentDirPath, deskriptorFolder)
 
-        # Use shutil.copytree to copy the entire folder
-        shutil.copytree(src=srcPath, dst=dstPath)
+        # Collect metadata information for the JSON descriptor
+        metadata = {
+            "name": deskriptorFolder,
+            "url": repo_url,
+            "files": [],
+            "pipeline": [],
+            "docker": None
+        }
+
+        # Walk through the source folder and gather relevant files
+        for root, _, files in os.walk(srcPath):
+            for file in files:
+                # Collect all .json files
+                if file.endswith(".json"):
+                    metadata["files"].append(file)
+                # Collect all Python files for pipelines
+                elif file.endswith(".py"):
+                    metadata["pipeline"].append(os.path.relpath(os.path.join(root, file), srcPath))
+                # Search for Dockerfile descriptor
+                elif "dockerfile" in file.lower():
+                    metadata["docker"] = os.path.relpath(os.path.join(root, file), srcPath)
+
+        # If no pipelines were found, set it to None
+        if not metadata["pipeline"]:
+            metadata["pipeline"] = None
+
+        descriptor = {
+            "descriptor": {
+                "metadata": metadata
+            }
+        }
+
+        # Write the JSON file to the output directory
+        jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}_descriptor.json")
+        with open(jsonFilePath, 'w') as jsonFile:
+            json.dump(descriptor, jsonFile, indent=2)
+
+        print(f"JSON descriptor created at: {jsonFilePath}")
+
+    else:
+        # Destination path for the descriptor folder
+        dstPath = os.path.join(outputDirPath, deskriptorFolder)
+
+        # Copy the descriptor folder to the destination if it doesn't exist there
+        if not os.path.exists(dstPath):
+            currentDirPath = os.getcwd()
+            srcPath = os.path.join(currentDirPath, deskriptorFolder)
+
+            # Use shutil.copytree to copy the entire folder
+            shutil.copytree(src=srcPath, dst=dstPath)
+
+            print(f"Folder copied to: {dstPath}")
+
 
 
     
@@ -145,7 +204,7 @@ def merge_branches_to_master():
 
 if __name__ == "__main__":
 
-    folder_name = 'descrikptorFolderExample100/'
+    folder_name = 'descrikptorFolderExample89/'
 
     utils.generate_example_deskriptor(folder_name)
 
