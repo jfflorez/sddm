@@ -185,7 +185,7 @@ if __name__ == "__main__":
             sys.exit(1)
         arg1 = sys.argv[2]
         arg2 = sys.argv[3]
-        arg3 = sys.argv[4]
+        arg3 = sys.argv[4] == 'True'
 
         download(arg1, arg2, arg3)
 
