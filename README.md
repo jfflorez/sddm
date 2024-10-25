@@ -38,6 +38,10 @@ python sddm.py download <deskriptorFolder> <outputDirPath> <createJsonDescriptor
 deskriptorFolder: Name of the descriptor branch to download.
 outputDirPath: Path to the directory where the descriptor will be saved.
 createJsonDescriptor: Set to True to generate a JSON descriptor (otherwise set to False).
+
+Example:
+python sddm.py download descriptorFolderExample ../data/ True
+python sddm.py download descriptorFolderExample ../data/ False
 ```
 ### Get a list of available dataset descriptors (Git branches).
 
