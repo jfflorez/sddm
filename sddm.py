@@ -170,14 +170,14 @@ if __name__ == "__main__":
     # Handle function execution based on the provided function name
     if function_name == "publish":
         if len(sys.argv) != 3:
-            print("Usage: python sddm.py upload <deskriptorFolderPath>")
+            print("Usage: python sddm.py publish <deskriptorFolderPath>")
             sys.exit(1)
         deskriptorFolderPath = sys.argv[2]
         upload(deskriptorFolderPath)
 
     elif function_name == "consume":
         if len(sys.argv) != 5:
-            print("Usage: python sddm.py download <deskriptorFolder> <outputDirPath> <createJsonDescriptor(True|False)>")
+            print("Usage: python sddm.py consume <deskriptorFolder> <outputDirPath> <createJsonDescriptor(True|False)>")
             sys.exit(1)
         arg1 = sys.argv[2]
         arg2 = sys.argv[3]
