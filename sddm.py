@@ -149,13 +149,6 @@ def download(deskriptorFolder: str, outputDirPath: str): #, createJsonDescriptor
         }
     }
 
-    # Write the JSON file to the output directory
-    jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}", f"{deskriptorFolder}.json")
-    with open(jsonFilePath, 'w') as jsonFile:
-        json.dump(descriptor, jsonFile, indent=2)
-
-    print(f"JSON descriptor created at: {jsonFilePath}")
-
     #else:
     # Destination path for the descriptor folder
     dstPath = os.path.join(outputDirPath, deskriptorFolder)
@@ -169,6 +162,13 @@ def download(deskriptorFolder: str, outputDirPath: str): #, createJsonDescriptor
         shutil.copytree(src=srcPath, dst=dstPath)
 
         print(f"Folder copied to: {dstPath}")
+
+        # Write the JSON file to the output directory
+        jsonFilePath = os.path.join(dstPath, f"{deskriptorFolder}.json")
+        with open(jsonFilePath, 'w') as jsonFile:
+            json.dump(descriptor, jsonFile, indent=2)
+
+        print(f"JSON descriptor created at: {jsonFilePath}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
