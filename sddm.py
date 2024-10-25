@@ -169,6 +169,8 @@ def download(deskriptorFolder: str, outputDirPath: str): #, createJsonDescriptor
             json.dump(descriptor, jsonFile, indent=2)
 
         print(f"JSON descriptor created at: {jsonFilePath}")
+        
+    run_git_command(['git', 'checkout', 'main'])
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
