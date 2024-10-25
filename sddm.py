@@ -150,7 +150,7 @@ def download(deskriptorFolder: str, outputDirPath: str): #, createJsonDescriptor
     }
 
     # Write the JSON file to the output directory
-    jsonFilePath = os.path.join(outputDirPath, "deskriptorFolder", f"{deskriptorFolder}.json")
+    jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}", f"{deskriptorFolder}.json")
     with open(jsonFilePath, 'w') as jsonFile:
         json.dump(descriptor, jsonFile, indent=2)
 
