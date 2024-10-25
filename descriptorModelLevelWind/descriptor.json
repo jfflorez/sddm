@@ -1,9 +1,0 @@
-{
-
-    "valid_time_start" : "2023-01-01T11:00",
-    "valid_time_stop" : "2023-01-01T11:59",
-    "source_path" : "gs://gcp-public-data-arco-era5/co/model-level-wind.zarr-v2"
-
-}
-
-
