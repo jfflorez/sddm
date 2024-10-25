@@ -150,7 +150,7 @@ def download(deskriptorFolder: str, outputDirPath: str): #, createJsonDescriptor
     }
 
     # Write the JSON file to the output directory
-    jsonFilePath = os.path.join(outputDirPath, f"{deskriptorFolder}.json")
+    jsonFilePath = os.path.join(outputDirPath, "deskriptorFolder", f"{deskriptorFolder}.json")
     with open(jsonFilePath, 'w') as jsonFile:
         json.dump(descriptor, jsonFile, indent=2)
 
@@ -187,13 +187,13 @@ if __name__ == "__main__":
         upload(deskriptorFolderPath)
 
     elif function_name == "consume":
-        if len(sys.argv) != 5:
-            print("Usage: python sddm.py consume <deskriptorFolder> <outputDirPath> <createJsonDescriptor(True|False)>")
+        if len(sys.argv) != 4:
+            print("Usage: python sddm.py consume <deskriptorFolder> <outputDirPath>")
             sys.exit(1)
         arg1 = sys.argv[2]
         arg2 = sys.argv[3]
-        arg3 = sys.argv[4] == 'True'
-        download(arg1, arg2, arg3)
+        #arg3 = sys.argv[4] == 'True'
+        download(arg1, arg2) #, arg3)
 
     elif function_name == "get_descriptors":
         if len(sys.argv) != 2:
