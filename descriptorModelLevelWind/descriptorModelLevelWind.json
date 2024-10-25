@@ -1,0 +1,15 @@
+{
+  "descriptor": {
+    "metadata": {
+      "name": "descriptorModelLevelWind",
+      "url": "https://github.com/jfflorez/sddm.git",
+      "files": [
+        "descriptor.json"
+      ],
+      "pipeline": [
+        "pipeline.py"
+      ],
+      "docker": []
+    }
+  }
+}
