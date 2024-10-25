@@ -39,6 +39,12 @@ deskriptorFolder: Name of the descriptor branch to download.
 outputDirPath: Path to the directory where the descriptor will be saved.
 createJsonDescriptor: Set to True to generate a JSON descriptor (otherwise set to False).
 ```
+
+Example:
+```bash
+python sddm.py consume descriptorModelLevelWind ../data/ True
+```
+
 ### Get a list of available dataset descriptors (Git branches).
 
 ```bash
