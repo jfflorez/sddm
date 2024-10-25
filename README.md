@@ -20,24 +20,27 @@ cd <repository-directory>
 ```
 
 ## Usage
-SDDM supports three main commands: upload, download, and get_descriptors.
+SDDM supports three main commands: upload (or publish), download (or consume), and get_descriptors.
 
-### Upload a dataset descriptor folder to a new branch in the Git repository.
+### Publish a dataset descriptor folder to a new branch in the Git repository.
 
 ```bash
-python sddm.py upload <deskriptorFolderPath>
+python sddm.py publish <deskriptorFolderPath>
 
 deskriptorFolderPath: Path to the descriptor folder.
 ```
 
-### Download a dataset descriptor to a specified output directory.
+### Consume a dataset descriptor to a specified output directory.
 
 ```bash
-python sddm.py download <deskriptorFolder> <outputDirPath> <createJsonDescriptor>
+python sddm.py consume <deskriptorFolder> <outputDirPath> 
 
 deskriptorFolder: Name of the descriptor branch to download.
 outputDirPath: Path to the directory where the descriptor will be saved.
-createJsonDescriptor: Set to True to generate a JSON descriptor (otherwise set to False).
+
+Example:
+python sddm.py download descriptorFolderExample ../data/ True
+python sddm.py download descriptorFolderExample ../data/ False
 ```
 
 Example:
@@ -55,3 +58,7 @@ python sddm.py get_descriptors
 Ensure paths use forward slashes (/).
 
 Check that Git is installed and properly configured.
+
+## TODO
+
+Publish operation bug: Publish operation only works on folders that are the same level of sddm.py.
