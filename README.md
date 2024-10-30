@@ -1,9 +1,19 @@
-# Software Defined Dataset Manager (SDDM) - README
+# Software Defined Dataset (SDD) Store - README
 
 ## Overview
-The **Software Defined Dataset Manager (SDDM)** is a command-line tool that simplifies managing dataset descriptors in a Git-based version control system. It provides functionalities to upload datasets, download them, and list available dataset descriptors using Git branches.
 
-A dataset descriptor is a collection of JSON files and a Python script (`pipeline.py`) that processes these JSON files to define a specific subset of a large-scale dataset.
+The **Software Defined Dataset Store (SDD Store)** is a Git-based repository for managing **software-defined datasets (SDDs)**. Each SDD is a collection of JSON files that specify a dataset subset, along with a Python script (`etl_pipeline.py`) that processes the SDD to retrieve this subset from large, petabyte-scale datasets that are too large to store locally.
+
+
+The repository structure includes:
+- **Main branch**: Contains the **Software Defined Dataset Manager (SDDM)**, a command-line tool for managing SDDs.
+- **Dataset branches**: Each branch holds a distinct software-defined dataset.
+
+### Key Features
+The **SDDM** tool provides a streamlined interface to:
+- Upload new SDDs to the store
+- Download existing SDDs
+- List available datasets along with their descriptors (metadata about each SDD’s contents, structure, and purpose)
 
 
 ## Prerequisites
